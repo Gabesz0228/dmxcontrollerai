@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI DMX Controller</title>
+</head>
+<body style="background: black; color: white;">
+  <h1>AI DMX Controller</h1>
+  <button id="startButton">Start</button>
+  <button id="stopButton">Stop</button>
+
+  <script type="module">
+    import './dmx-ai-controller.js';
+
+    const app = new AILightingApp();
+    
+    document.getElementById('startButton').onclick = async () => {
+      await app.setup();
+      app.start();
+    };
+    
+    document.getElementById('stopButton').onclick = () => {
+      app.stop();
+    };
+  </script>
+</body>
+</html>
