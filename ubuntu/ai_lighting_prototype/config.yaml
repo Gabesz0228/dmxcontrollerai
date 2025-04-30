@@ -1,0 +1,53 @@
+# Default Configuration for AI Lighting Control System
+
+audio:
+  # Specify device ID (integer) or leave null for default input device
+  # Use `python -m sounddevice` to list available devices
+  input_device: 13
+  channels: 1 # Mono input
+  sample_rate: 44100
+  block_duration_ms: 50 # Processing chunk size in milliseconds
+
+analysis:
+  # Buffer duration for Librosa analysis (in seconds)
+  buffer_duration: 0.5 
+  # Hop length for Librosa analysis (smaller means more computationally expensive)
+  hop_length: 256
+  # Onset detection threshold (relative to mean/std dev - needs tuning)
+  onset_threshold_factor_mean: 0.5
+  onset_threshold_factor_std: 0.5
+
+ai_decision:
+  # RMS thresholds for transitioning between low/high energy states
+  energy_threshold_high: 0.3
+  energy_threshold_low: 0.1
+  # Add other state machine parameters here if needed
+
+dmx:
+  # Interface type: "DmxPy" (for Enttec Pro compatible), "ArtNet", "sACN", or "Simulation"
+  interface_type: "DmxPy" 
+  # --- DmxPy specific settings ---
+  # serial_port: null # Optional: Specify serial port if auto-detect fails
+  # --- ArtNet specific settings ---
+  # target_ip: "192.168.1.100" # IP address of ArtNet node
+  # universe: 0
+  # --- sACN specific settings ---
+  # sacn_universe: 1
+  # sacn_multicast: true
+  # sacn_target_ip: null # Specify for unicast
+  
+  fixtures:
+    # Define one or more fixtures
+    - name: "RGB Par 1"
+      start_channel: 1
+      profile: # Simple RGB profile
+        red: 0 # Offset from start_channel
+        green: 1
+        blue: 2
+    # - name: "RGB Par 2"
+    #   start_channel: 4
+    #   profile:
+    #     red: 0
+    #     green: 1
+    #     blue: 2
+

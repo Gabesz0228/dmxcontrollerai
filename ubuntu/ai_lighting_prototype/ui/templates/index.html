@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Lighting Control</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.5; padding: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #555; text-align: center; }
+        #status { margin-top: 20px; padding: 15px; background-color: #e9e9e9; border-radius: 5px; }
+        #status p { margin: 5px 0; }
+        strong { color: #0056b3; }
+        .label { display: inline-block; width: 120px; font-weight: bold; }
+    </style>
+    <!-- Include Socket.IO client library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Lighting Control Status</h1>
+        <div id="status">
+            <p><span class="label">System Status:</span> <strong id="system-status">Initializing...</strong></p>
+            <p><span class="label">Current State:</span> <strong id="ai-state">-</strong></p>
+            <p><span class="label">Detected Tempo:</span> <strong id="tempo">-</strong> BPM</p>
+            <p><span class="label">Current RMS:</span> <strong id="rms">-</strong></p>
+            <p><span class="label">Beat Detected:</span> <strong id="beat">-</strong></p>
+            <p><span class="label">Onset Detected:</span> <strong id="onset">-</strong></p>
+            <p><span class="label">DMX Output:</span> <strong id="dmx-status">-</strong></p>
+        </div>
+    </div>
+
+    <script>
+        // Connect to the Socket.IO server
+        const socket = io(); // Assumes server is running on the same host/port
+
+        socket.on("connect", () => {
+            console.log("Connected to server");
+            document.getElementById("system-status").textContent = "Connected";
+        });
+
+        socket.on("disconnect", () => {
+            console.log("Disconnected from server");
+            document.getElementById("system-status").textContent = "Disconnected";
+        });
+
+        // Listen for status updates from the server
+        socket.on("status_update", (data) => {
+            console.log("Status update received:", data);
+            document.getElementById("system-status").textContent = data.system_status || "Running";
+            document.getElementById("ai-state").textContent = data.ai_state || "-";
+            document.getElementById("tempo").textContent = data.tempo ? data.tempo.toFixed(1) : "-";
+            document.getElementById("rms").textContent = data.rms ? data.rms.toFixed(3) : "-";
+            document.getElementById("beat").textContent = data.beat_now ? "Yes" : "No";
+            document.getElementById("onset").textContent = data.onset_now ? "Yes" : "No";
+            document.getElementById("dmx-status").textContent = data.dmx_status || "-";
+        });
+    </script>
+</body>
+</html>
+
